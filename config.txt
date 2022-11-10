@@ -1,0 +1,9 @@
+{
+    "TARGET": "ALLOWED_LIST", 
+    "TIMESTAMP": "Sun, 25 Sep 2022 22:52:16 +0530", 
+    "KEYTYPE": "X509KEY", 
+    "VERSION": 2, 
+    "USAGE": "CUS-CT", 
+    "OPERATION": "DELETE", 
+    "USAGE_ADDITIONAL_DATA": "PNM:APNAM,KNM:AKNAM,"
+}
