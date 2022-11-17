@@ -42,8 +42,8 @@ ktyp = [
     "GPGKEY",
 ]
 
-# Sacret Strings
-sacret_str = [
+# Json key Strings
+json_key_str = [
     "VERSION",             #0
     "OPERATION",           #1
     "TARGET",              #2
@@ -90,21 +90,15 @@ def kcleanup_exit():
     kcleanup()
     quit()
 
-def sanitizeVersion(vstr):
-    if vstr != 2:
-        print("Error: Invalid Version: "+str(vstr))
-        kcleanup_exit()
-    kdbg("Version Provided is: "+str(vstr))
-
 def sanitizeOperation(ostr):
     if ostr not in oper:
-        print("Invalid Operation String:"+ostr)
+        print("Invalid Operation String:"+ str(ostr))
         kcleanup_exit()
     kdbg("Operation: "+ostr)
 
 def sanitizeTarget(t):
     if t not in trgt:
-        print("Invalid Target String:"+t)
+        print("Invalid Target String:"+ str(t))
         kcleanup_exit()
     kdbg("Target is: "+t)
 
@@ -125,7 +119,7 @@ def sanitizeAdditional(additional):
         print("Error: maximum length of additional string is 128 char")
         kcleanup_exit()
     if re.search(r'[^A-Za-z0-9:,_-]', additional):
-        print("Only - , _ , : and alphanumeric char allowed in additional field")
+        print("Only '-' , '_' , ':', ',' and alphanumeric char allowed in additional field")
         kcleanup_exit()
     kdbg("Additional Flag: "+additional)
 
@@ -183,7 +177,7 @@ def sanitizeTimestamp(timestamp_val):
 
 def sanitizeKeyType(kt):
     if kt not in ktyp:
-        print("Invalid Key type:"+kt)
+        print("Invalid Key type:"+ str(kt))
         kcleanup_exit()
     kdbg("Key Type: "+kt)
 

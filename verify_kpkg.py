@@ -65,26 +65,26 @@ def verifyPkg(pkgf, pubkey):
 
 def ValidateVersionTwo(jobj):
     for key in jobj:
-        if key not in sacret_str:
+        if key not in json_key_str:
             print("Invalid line found in JSON file:"+key)
             kcleanup_exit()
         else:
-            if key == sacret_str[1]:
+            if key == json_key_str[1]:
                 sanitizeOperation(jobj[key])
                 continue
-            if key == sacret_str[2]:
+            if key == json_key_str[2]:
                 sanitizeTarget(jobj[key])
                 continue
-            if key == sacret_str[3]:
+            if key == json_key_str[3]:
                 sanitizeUsage(jobj[key])
                 continue
-            if key == sacret_str[4]:
+            if key == json_key_str[4]:
                 sanitizeAdditional(jobj[key])
                 continue
-            if key == sacret_str[5]:
+            if key == json_key_str[5]:
                 sanitizeTimestamp(jobj[key])
                 continue
-            if key == sacret_str[6]:
+            if key == json_key_str[6]:
                 sanitizeKeyType(jobj[key])
                 continue
 
@@ -101,7 +101,7 @@ def VerifyBlist(fname, nosign, pubkey):
     kdbg(fname+" : Verification complete")
 
 def ValidateVersionTwoConfig(jobj, nosign, pubkey):
-    if sacret_str[7] in jobj:
+    if json_key_str[7] in jobj:
         kdbg("Key Package Bundle found.")
         flist = jobj["PACKAGE_LIST"]
         alist = flist[trgt[0]]
@@ -125,11 +125,11 @@ def sanitizeConfigFile(nosign, pubkey):
         jobj = json.load(f)
 
         # Check version
-        if jobj[sacret_str[0]] == 1:
+        if jobj[json_key_str[0]] == 1:
             print("Invalid version 1 found in key package")
             kcleanup_exit()
         
-        if jobj[sacret_str[0]] == 2:
+        if jobj[json_key_str[0]] == 2:
             kdbg("Key package Version 2")
             ValidateVersionTwoConfig(jobj, nosign, pubkey)
         else:

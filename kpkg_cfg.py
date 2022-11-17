@@ -13,6 +13,8 @@
 import json
 from kpkg_cmn import *
 
+TARFILE = "a.tar"
+
 def setTemp(val):
     global tmp
     global tar_fname
@@ -20,7 +22,7 @@ def setTemp(val):
         tmp = TEMPDIR
     else:
         tmp = val+"/KPKG_TMPDIR/"
-    tar_fname = tmp+"a.tar"
+    tar_fname = tmp + TARFILE
     # Delete TEMP directory to start with
     kdbg("Creating TEMP directory: "+tmp)
     status, log = getstatusoutput(RMCMD+tmp)
@@ -173,10 +175,9 @@ class KConfig:
         global tmp
         c = tmp+fname
         try:
-            f = open(c, "w")
-            #kdbg("Writing to file: "+buf)
-            f.write(buf)
-            f.close()
+            with open(c, "w") as f:
+                #kdbg("Writing to file: "+buf)
+                f.write(buf)
         except:
             print("Error: Failed to write file to disk.")
             kcleanup_exit()
@@ -240,26 +241,26 @@ class KConfig:
         jcfg = {}
 
         # Dump VERSION info.
-        jcfg[sacret_str[0]] = self.VERSION_VAL
+        jcfg[json_key_str[0]] = self.VERSION_VAL
 
         # Dump Operation
-        jcfg[sacret_str[1]] = self.operation_val
+        jcfg[json_key_str[1]] = self.operation_val
 
         # Dump Target
-        jcfg[sacret_str[2]] = self.target_val
+        jcfg[json_key_str[2]] = self.target_val
 
         # Dump Usage
-        jcfg[sacret_str[3]] = self.usage_val
+        jcfg[json_key_str[3]] = self.usage_val
 
         # Dump Additional flag
         if self.additional_val:
-            jcfg[sacret_str[4]] = self.additional_val
+            jcfg[json_key_str[4]] = self.additional_val
 
         # Dump TIMESTAMP
-        jcfg[sacret_str[5]] = self.timestamp_val
+        jcfg[json_key_str[5]] = self.timestamp_val
 
         # Dump KEYTYPE
-        jcfg[sacret_str[6]] = self.keytype_val
+        jcfg[json_key_str[6]] = self.keytype_val
 
         # Dump everything to file.
         jobj = json.dumps(jcfg, indent = 4)

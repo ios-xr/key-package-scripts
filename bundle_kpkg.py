@@ -22,6 +22,7 @@ rlist = {}
 fin = {"ALLOWED_LIST":[], "REVOKED_LIST":[]}
 
 TEMPDIR   = ""
+CONFIG_FILE = "config.txt"
 
 def bcleanup_exit():
     cmd = RMCMD+TEMPDIR
@@ -96,7 +97,7 @@ def keyProcess (kpath, pubkey, privkey, nosign):
         quit()
 
     # Got JSON config file.
-    json_file = TEMPDIR+"config.txt"
+    json_file = TEMPDIR + CONFIG_FILE
     with open(json_file, 'r') as f:
         jobj = json.load(f)
         kdbg(jobj)
@@ -182,11 +183,11 @@ def main():
 
     # Add version information
     # This will be version 2
-    config_file[sacret_str[0]] = 2
+    config_file[json_key_str[0]] = 2
     # SET Bundle flag to TRUE
-    config_file[sacret_str[7]] = 1
+    config_file[json_key_str[7]] = 1
     # Set KEY List
-    config_file[sacret_str[8]] = fin
+    config_file[json_key_str[8]] = fin
     jobj = json.dumps(config_file, indent = 4)
     
     # Dump config content to file

@@ -59,7 +59,8 @@ def main():
     # CLI check 1
     if args.usage == "CUS-CT":
         if not args.additional:
-            print("For Customer-CT certificate, \"--additional\" field is mandatory")
+            print("USAGE CUS-CT is reserved for customer consent-token keys \n" + 
+                  "For Customer-CT certificate, \"--additional\" field is mandatory")
             quit()
 
     # Set temporary directory
