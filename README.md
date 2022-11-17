@@ -3,7 +3,7 @@ This page summarizes the process of creation of Key Package
 
 ## Why is Key Package needed.
 
-       The end goal of Key Package infrastructure is to provide user a secure mechanism to install Customer signed software or a secure way for customer to send Customer Signed Consent Requests. Key-package is a conduit used to securely onboard public/verification keys of 3rd party non-cisco customers, onto XR devices.
+The end goal of Key Package infrastructure is to provide user a secure mechanism to install Customer signed software or a secure way for customer to send Customer Signed Consent Requests. Key-package is a conduit used to securely onboard public/verification keys of 3rd party non-cisco customers, onto XR devices.
 
 
 ## What is Key Package
