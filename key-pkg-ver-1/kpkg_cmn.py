@@ -1,14 +1,19 @@
-#!/router/bin/python
-#-------------------------------------------------------------------------
+#!/usr/bin/python
 #
-# Common file.
-# This copyright has to be modified when publishing this script to github.
-#
-# Aug 2021, Sameer Pasha
-#
-# Copyright (c) 2021-2022 by cisco Systems, Inc.
-# All rights reserved.
-#-------------------------------------------------------------------------
+# Copyright (c) 2022 Cisco and/or its affiliates.
+# 
+# This software is licensed to you under the terms of the Cisco Sample
+# Code License, Version 1.1 (the "License"). You may obtain a copy of the
+# License at
+# 
+#                https://developer.cisco.com/docs/licenses
+# 
+# All use of the material herein must be in accordance with the terms of
+# the License. All rights not expressly granted by the License are
+# reserved. Unless required by applicable law or agreed to separately in
+# writing, software distributed under the License is distributed on an "AS
+# IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+# or implied.
 
 import os
 import re
@@ -23,7 +28,6 @@ MKDIRCMD  = "mkdir -p "
 TAR       = "tar -cvf "
 UNTAR     = "tar -C "
 CONFIG    = "config.txt"
-TARFILE     = "a.tar"
 
 CUSCT     = "CUS-CT"
 
@@ -39,20 +43,17 @@ trgt = [
 
 ktyp = [
     "X509KEY",
-    "GPGKEY",
 ]
 
-# Json key Strings
-json_key_str = [
-    "VERSION",             #0
-    "OPERATION",           #1
-    "TARGET",              #2
-    "USAGE",               #3
-    "USAGE_ADDITIONAL_DATA",   #4
-    "TIMESTAMP",           #5
-    "KEYTYPE",             #6
-    "MULTIPLE_KEYPACKAGE", #7
-    "PACKAGE_LIST",        #8
+# Sacret Strings
+sacret_str = [
+    "VERSION=",             #0
+    "OPERATION=",           #1
+    "TARGET=",              #2
+    "USAGE=",               #3
+    "USAGE_ADDITIONAL_DATA=",   #4
+    "TIMESTAMP=",           #5
+    "KEYTYPE=",             #6
 ]
 
 # Buffer Limits
@@ -64,9 +65,6 @@ USAGE_LEN               = 6
 TIMESTAMP_LEN           = 41
 
 dbg       = 0
-
-SIGNED = 1
-UNSIGNED = 0
 
 def setDbg(val):
     global dbg
@@ -90,15 +88,21 @@ def kcleanup_exit():
     kcleanup()
     quit()
 
+def sanitizeVersion(vstr):
+    if vstr != "1":
+        print("Error: Invalid Version: "+vstr)
+        kcleanup_exit()
+    kdbg("Version Provided is: "+vstr)
+
 def sanitizeOperation(ostr):
     if ostr not in oper:
-        print("Invalid Operation String:"+ str(ostr))
+        print("Invalid Operation String:"+ostr)
         kcleanup_exit()
     kdbg("Operation: "+ostr)
 
 def sanitizeTarget(t):
     if t not in trgt:
-        print("Invalid Target String:"+ str(t))
+        print("Invalid Target String:"+t)
         kcleanup_exit()
     kdbg("Target is: "+t)
 
@@ -119,7 +123,7 @@ def sanitizeAdditional(additional):
         print("Error: maximum length of additional string is 128 char")
         kcleanup_exit()
     if re.search(r'[^A-Za-z0-9:,_-]', additional):
-        print("Only '-' , '_' , ':', ',' and alphanumeric char allowed in additional field")
+        print("Only - , _ , : and alphanumeric char allowed in additional field")
         kcleanup_exit()
     kdbg("Additional Flag: "+additional)
 
@@ -177,7 +181,7 @@ def sanitizeTimestamp(timestamp_val):
 
 def sanitizeKeyType(kt):
     if kt not in ktyp:
-        print("Invalid Key type:"+ str(kt))
+        print("Invalid Key type:"+kt)
         kcleanup_exit()
     kdbg("Key Type: "+kt)
 
