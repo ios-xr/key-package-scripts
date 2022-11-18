@@ -5,11 +5,11 @@ These scripts have been validated only with python2
 ## Creating Key Package
 
 ### To Add a GPG Key:
-create_kpkg.py -o ADD -t ALLOWED_LIST -u TESTG -k GPGKEY -i ./test.gpg -p ./oc-single.pem -r ./oc-single-priv.key -f ~/test.add
+create_kpkg.py -o ADD -t ALLOWED_LIST -u TESTG -k X509KEY -i ./test.gpg -p ./oc-single.pem -r ./oc-single-priv.key -f ~/test.add
 Key package generated at: ~/test.add
 
 ### To remove a Key:
-create_kpkg.py -o DELETE -t ALLOWED_LIST -u TESTG -k GPGKEY -i ./test.gpg -p ./oc-single.pem -r ./oc-single-priv.key -f ~/test.del
+create_kpkg.py -o DELETE -t ALLOWED_LIST -u TESTG -k X509KEY -i ./test.gpg -p ./oc-single.pem -r ./oc-single-priv.key -f ~/test.del
 Key package generated at: ~/test.del
 
 ### Verifying Key Package - Tools
@@ -19,7 +19,7 @@ The various argument's description is as below:
 - o - Type of operation (ADD/DELETE)
 - t - List to operate on (ALLOWED_LIST/REVOKED_LIST)
 - u - Name of key (key will be stored with this name in XR router)
-- k - Key type (X509/GPG)
+- k - Key type (X509)
 - i - Key to be added
 - p - Signing public key
 - r - Signing private key
