@@ -16,8 +16,8 @@ A customer has to establish device ownership, as part of which the Ownership Cer
 
 Confirm device ownership is established by issuing command: "show platform security device-ownership"
 
------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------
+---
+
 
 ## Creating Key Package
 
@@ -39,18 +39,16 @@ Key package Bundle generated at: ~/bundle.key
 verify_kpkg.py -p ./oc-single.pem -f  ~/test.del
 
 The various argument's description is as below:
-o - Type of operation (ADD/DELETE)
-t - List to operate on (ALLOWED_LIST/REVOKED_LIST)
-u - Name of key (key will be stored with this name in XR router)
-k - Key type (X509/GPG)
-i - Key to be added
-p - Signing public key
-r - Signing private key
-f - Output file 
+- o - Type of operation (ADD/DELETE)
+- t - List to operate on (ALLOWED_LIST/REVOKED_LIST)
+- u - Name of key (key will be stored with this name in XR router)
+- k - Key type (X509/GPG)
+- i - Key to be added
+- p - Signing public key
+- r - Signing private key
+- f - Output file 
 
-
------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------
+---
 
 ## Key Package in XR
 
