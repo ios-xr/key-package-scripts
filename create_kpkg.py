@@ -57,11 +57,14 @@ def main():
         quit()
 
     # CLI check 1
-    if args.usage == "CUS-CT":
+    if args.usage == "CUSTOMER-CONSENT-TOKEN" or args.usage == "CUS-CT":
         if not args.additional:
-            print("USAGE CUS-CT is reserved for customer consent-token keys \n" + 
-                  "For Customer-CT certificate, \"--additional\" field is mandatory")
+            print("USAGE CUSTOMER-CONSENT-TOKEN/CUS-CT is reserved for customer consent-token keys \n" + 
+                  "For Customer Consent-token keys, \"--additional\" field is mandatory")
             quit()
+        # Setting internal name for Customer consent-token keys    
+        args.usage = "CUS-CT"    
+
 
     # Set temporary directory
     setTemp(args.tempdir)
