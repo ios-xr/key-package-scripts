@@ -62,11 +62,13 @@ def main():
         quit()
 
     # CLI check 1
-    if args.usage == "CUS-CT":
+    if args.usage == "CUS-CT" or args.usage == "CUSTOMER-CONSENT-TOKEN":
         if not args.additional:
             print("USAGE CUS-CT is reserved for customer consent-token keys \n" + 
                   "For Customer-CT certificate, \"--additional\" field is mandatory")
             quit()
+        
+        args.usage = "CUS-CT"
 
     # Set temporary directory
     setTemp(args.tempdir)
