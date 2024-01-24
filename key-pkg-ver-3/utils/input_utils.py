@@ -1,9 +1,11 @@
 # util for helping in input validation
 import pyinputplus as pyip, re
+from datetime import datetime
 
 MAX_RETRY = 5
 MAX_KEY_NAME_LEN = 6
 MAX_KEY_METADATA_LEN = 128
+TIMESTAMP_LEN = 41
 VALID_TARGET_LIST = ['ALLOWED_LIST','REVOKED_LIST']
 VALID_OPERATIONS = ['APPEND','DELETE', 'REPLACE']
 VALID_KEY_TYPES = ['X509KEY','GPGKEY']
@@ -23,6 +25,22 @@ def validate_key_metadata(key_metadata):
     if len(key_metadata) > MAX_KEY_METADATA_LEN:
         return "key name length cannot be more than 128 characters"
     return True
+
+
+def validate_timestamp(timestamp):
+    if timestamp == "":
+        return True
+    try:
+        datetime_obj = datetime.strptime(timestamp[0:(len(timestamp) - 5)],
+                                    "%a, %d %b %Y %H:%M:%S ")
+    except ValueError as v:
+        return('Invalid timestamp provided. Timestamp should be output of \"date -R\"')
+    if (datetime_obj.year < 2000) or (datetime_obj.year > 2100):
+        return("Invalid YEAR in timestamp. Should be between 2000 and 2100")
+    if len(timestamp) > TIMESTAMP_LEN:
+        return(f"Length of provided timestamp exceeds limit of {TIMESTAMP_LEN} chars.")
+    return True
+
 
 def input_key_name():
     key_name = None
@@ -50,6 +68,21 @@ def input_key_metadata():
             return key_metadata
         else:
             print(is_valid_key_metadata)
+        max_retry = max_retry - 1
+        print("Retries left:", max_retry)
+    print("Max retry reached!")
+    exit(1)
+
+def input_timestamp():
+    timestamp = None
+    max_retry = MAX_RETRY
+    while max_retry != 0:
+        timestamp = pyip.inputStr(blank=True, prompt = "Please input timestamp:\n")
+        is_valid_timestamp = validate_timestamp(timestamp)
+        if isinstance(is_valid_timestamp, bool) and is_valid_timestamp is True:
+            return timestamp
+        else:
+            print(is_valid_timestamp)
         max_retry = max_retry - 1
         print("Retries left:", max_retry)
     print("Max retry reached!")

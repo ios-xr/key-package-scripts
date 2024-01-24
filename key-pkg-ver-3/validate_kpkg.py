@@ -5,7 +5,7 @@ from utils.input_utils import *
 
 
 def key_dict_validator(key_dict):
-    print("key_dict_validator:::")
+    # print("key_dict_validator:::")
     '''Return True only if valid, otherwise return error string
     '''
     if len(list(key_dict.keys())) == 4:
@@ -24,8 +24,9 @@ def key_dict_validator(key_dict):
             return True
     return 'Some key details are incorrect!'
 
+
 def kpkg_dict_validator(key_package_dict):
-    print("kpkg_dict_validator:::")
+    # print("kpkg_dict_validator:::")
     '''Return True only if valid, otherwise return error string
     '''
     if len(list(key_package_dict.keys())) == 3:
@@ -47,7 +48,7 @@ def kpkg_dict_validator(key_package_dict):
 
 
 def kpkg_config_validator(kpkg_config_dict):
-    print("kpkg_config_validator:::")
+    # print("kpkg_config_validator:::")
     # check if only one top key named as "key_packages"
     # print(type(kpkg_dict.keys()))
     if len(list(kpkg_config_dict.keys())) == 1 and list(kpkg_config_dict.keys())[0] == "key_packages":
@@ -64,10 +65,27 @@ def kpkg_config_validator(kpkg_config_dict):
         else:
             return '"key_package" value is not a type of list'
     else:
-        return '"key_packages" key in json is in incorrect format'
+        return '"key_packages" key in json, is in incorrect format'
 
 
-def main():
+def validate_kpkg(kpkg_config_file_path):
+    kpkg_file_content = get_file_content(kpkg_config_file_path)
+    try:
+        kpkg_config_dict = json.loads(kpkg_file_content)
+        is_valid_kpkg = kpkg_config_validator(kpkg_config_dict)
+        if is_valid_kpkg is True:
+            print("Key Package is valid")
+        else:
+            print("Key package invalid!")
+            print(is_valid_kpkg)
+            exit(1)
+    except Exception as e:
+        print("Input key package json file format is incorrect!\n")
+        print(e)
+        exit(1)
+
+
+def input_and_validate_kpkg():
     kpkg_content = pyip.inputStr(postValidateApplyFunc=get_file_content, prompt = "Please input key package json config file path:\n")
     while kpkg_content is None:
         print("ERROR: Please enter a valid file path.")
@@ -84,6 +102,8 @@ def main():
         print("Input key package json file format is incorrect!\n")
         print(e)
 
+def main():
+    input_and_validate_kpkg()
 
 if __name__ == "__main__":
     main()

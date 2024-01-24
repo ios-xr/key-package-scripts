@@ -1,4 +1,5 @@
-import sys, os
+import os
+
 
 def get_file_content(key_file_path):
     is_file = os.path.isfile(key_file_path)

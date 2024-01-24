@@ -2,6 +2,7 @@ from utils.create_kpkg_helper import *
 from utils.input_utils import *
 import pyinputplus as pyip, sys, json, re
 
+
 def main():
     """Interactive function for creating key packages
     """
@@ -30,7 +31,7 @@ def main():
                 # create a new key package and append to key package list
                 key_packages_list.append({"target_list": target_list, "operation": operation, "keys": [key.__dict__]})
             else:
-                # check if key package already exist
+                # check if key package already exists
                 is_key_package_found = False
                 for key_package in key_packages_list:
                     if key_package["target_list"] == target_list and key_package["operation"] == operation:
@@ -60,7 +61,7 @@ def main():
                 continue
 
         elif first_user_input == 'FINISH AND SAVE OUTPUT FILE':
-            save_filename = pyip.inputStr(prompt = "Please input filename for output:\n")
+            save_filename = pyip.inputStr(prompt = "Please input filename(with file extension, e.g., .json) for output:\n")
             key_packages_json_obj = json.dumps({"key_packages": key_packages_list}, indent = 4)
             try:
                 with open(save_filename, "w") as file_to_write:
