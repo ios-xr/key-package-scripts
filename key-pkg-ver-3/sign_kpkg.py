@@ -57,8 +57,20 @@ def sign_kpkg(public_key_file_path, private_key_file_path, config_input_path, ou
 
 def main():
     public_key_file_path = pyip.inputStr(prompt = "Please input public key file path:\n")
+    while not os.path.isfile(public_key_file_path):
+        print("ERROR: Please enter a valid file path.")
+        public_key_file_path = pyip.inputStr(prompt = "Please input public key file path:\n")
+
     private_key_file_path = pyip.inputStr(prompt = "Please input private key file path:\n")
+    while not os.path.isfile(private_key_file_path):
+        print("ERROR: Please enter a valid file path.")
+        private_key_file_path = pyip.inputStr(prompt = "Please input private key file path:\n")
+
     kpkg_config_file_input_path = pyip.inputStr(prompt = "Please input key package config file path to be signed:\n")
+    while not os.path.isfile(kpkg_config_file_input_path):
+        print("ERROR: Please enter a valid file path.")
+        kpkg_config_file_input_path = pyip.inputStr(prompt = "Please input key package config file path to be signed:\n")
+
     validate_kpkg(kpkg_config_file_input_path)
     timestamp = input_timestamp()
     output_path = pyip.inputStr(prompt = "Please input filename for output:\n")

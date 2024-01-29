@@ -2,7 +2,6 @@
 import pyinputplus as pyip, re
 from datetime import datetime
 
-MAX_RETRY = 5
 MAX_KEY_NAME_LEN = 6
 MAX_KEY_METADATA_LEN = 128
 TIMESTAMP_LEN = 41
@@ -44,46 +43,34 @@ def validate_timestamp(timestamp):
 
 def input_key_name():
     key_name = None
-    max_retry = MAX_RETRY
-    while max_retry != 0:
+    while True:
         key_name = pyip.inputStr(blank=True, prompt = "Please input key name:\n")
         is_valid_key_name = validate_key_name(key_name)
         if isinstance(is_valid_key_name, bool) and is_valid_key_name is True:
             return key_name
         else:
             print(is_valid_key_name)
-        max_retry = max_retry - 1
-        print("Retries left:", max_retry)
-    print("Max retry reached!")
-    exit(1)
+        print("Please retry with a valid input.")
 
 
 def input_key_metadata():
     key_metadata = None
-    max_retry = MAX_RETRY
-    while max_retry != 0:
+    while True:
         key_metadata = pyip.inputStr(blank=True, prompt = "Please input key metadata:\n")
         is_valid_key_metadata = validate_key_metadata(key_metadata)
         if isinstance(is_valid_key_metadata, bool) and is_valid_key_metadata is True:
             return key_metadata
         else:
             print(is_valid_key_metadata)
-        max_retry = max_retry - 1
-        print("Retries left:", max_retry)
-    print("Max retry reached!")
-    exit(1)
+        print("Please retry with a valid input.")
 
 def input_timestamp():
     timestamp = None
-    max_retry = MAX_RETRY
-    while max_retry != 0:
-        timestamp = pyip.inputStr(blank=True, prompt = "Please input timestamp:\n")
+    while True:
+        timestamp = pyip.inputStr(blank=True, prompt = "Please input timestamp (in 'date -R' format):\n")
         is_valid_timestamp = validate_timestamp(timestamp)
         if isinstance(is_valid_timestamp, bool) and is_valid_timestamp is True:
             return timestamp
         else:
             print(is_valid_timestamp)
-        max_retry = max_retry - 1
-        print("Retries left:", max_retry)
-    print("Max retry reached!")
-    exit(1)
+        print("Please retry with a valid input.")
