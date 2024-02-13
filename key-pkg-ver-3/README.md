@@ -2,13 +2,13 @@ These scripts have been validated only with python 3.6.8
 
 ## Introduction:
 
-By using key-pkg-ver-3, you can create multiple key packages, each targeting multiple operations.
-We have come up with interactive key package creation script for better convenience.
-Execute the script, it will ask for required information depending upon your inputs.
+By using key-pkg-ver-3, you can create ***multiple key packages***, each targeting ***multiple operations***.
+We have come up with an interactive key package creation script for better convenience.
+Execute the script, it will ask for required information, depending upon your inputs.
 The complete process can be divided into 3 simple steps, as follows:
-- Create key packages config file (.json) by running create_kpkg.py file or prepare it manually.
-- Validate config file (.json), if created manually, by running validate_kpkg.py.
-- Sign key package config file (.json) by running sign_kpkg.py.
+1. Create key packages config file (.json) by running create_kpkg.py file or prepare it manually.
+2. Validate config file (.json), if ***created manually***, by running validate_kpkg.py.
+3. Sign key package config file (.json) by running sign_kpkg.py.
 
 Mentioned 3 steps have been described below:
 
@@ -48,3 +48,4 @@ Run following command:
 ### Additional Information:
 
 - You can skip Step-1 and directly start from step-2, by creating your own .json key package file to input in step-2 and step-3.
+- You can have multiple operations, e.g., APPEND, DELETE or UPDATE, in one key package. (Note: APPEND is equivalent to ADD, UPDATE is equivalent to REPLACE).
