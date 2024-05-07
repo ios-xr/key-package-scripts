@@ -1,5 +1,4 @@
-import json
-import pyinputplus as pyip
+import json, argparse
 from utils.create_kpkg_helper import *
 from utils.input_utils import *
 
@@ -76,31 +75,34 @@ def validate_kpkg(kpkg_config_file_path):
         if is_valid_kpkg is True:
             print("Key Package is valid")
         else:
-            print("Key package invalid!")
+            print("Key package is invalid!")
             print(is_valid_kpkg)
             exit(1)
     except Exception as e:
         print("Input key package json file format is incorrect!\n")
-        print(e)
         exit(1)
 
 
 def input_and_validate_kpkg():
-    kpkg_content = pyip.inputStr(postValidateApplyFunc=get_file_content, prompt = "Please input key package json config file path:\n")
-    while kpkg_content is None:
-        print("ERROR: Please enter a valid file path.")
-        kpkg_content = pyip.inputStr(postValidateApplyFunc=get_file_content, prompt = "Please input key package json config file path:\n")
-    try:
-        kpkg_config_dict = json.loads(kpkg_content)
-        is_valid_kpkg = kpkg_config_validator(kpkg_config_dict)
-        if is_valid_kpkg is True:
-            print("Key Package is valid")
-        else:
-            print("Key package invalid!")
-            print(is_valid_kpkg)
-    except Exception as e:
-        print("Input key package json file format is incorrect!\n")
-        print(e)
+    parser = argparse.ArgumentParser(description = "Validate a manually created key package .json file")
+    parser.add_argument('-f', '--keypackage', required=True, help="Path to Key package json file to be validated")
+    args = parser.parse_args()
+
+    kpkg_content = get_file_content(args.keypackage)
+    if kpkg_content is  None:
+        print("Key package file path is invalid!")
+    else:
+        try:
+            kpkg_config_dict = json.loads(kpkg_content)
+            is_valid_kpkg = kpkg_config_validator(kpkg_config_dict)
+            if is_valid_kpkg is True:
+                print("Key Package is valid")
+            else:
+                print("Key package is invalid!")
+                print(is_valid_kpkg)
+        except Exception as e:
+            print("Input key package json file format is incorrect!\n")
+
 
 def main():
     input_and_validate_kpkg()
