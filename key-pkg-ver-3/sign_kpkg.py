@@ -1,6 +1,4 @@
-import pyinputplus as pyip
 import subprocess, json, os
-
 from utils.create_kpkg_helper import *
 from utils.input_utils import *
 from validate_kpkg import *
@@ -9,7 +7,7 @@ TEMP_CONFIG_FILE_WITH_TIMESTAMP = 'modified_config_with_ts.json'
 
 
 def add_timestamp(config_file_input_path, timestamp):
-    '''Add timestamp, if timestamp value is blank, generate and add
+    '''Add timestamp, if timestamp value is blank, generate and add.
     Expects a valid timestamp or blank timestamp value
     '''
 
@@ -56,30 +54,45 @@ def sign_kpkg(public_key_file_path, private_key_file_path, config_input_path, ou
 
 
 def main():
-    public_key_file_path = pyip.inputStr(prompt = "Please input public key file path:\n")
-    while not os.path.isfile(public_key_file_path):
-        print("ERROR: Please enter a valid file path.")
-        public_key_file_path = pyip.inputStr(prompt = "Please input public key file path:\n")
+    parser = argparse.ArgumentParser(description = "Validate a manually created key package .json file")
+    parser.add_argument('-f', '--keypackage', required = True, help = "Path to Key Package .json config file ")
+    parser.add_argument('-p', '--publickey', required = True, help = "Path to Public Key file ")
+    parser.add_argument('-r', '--privatekey', required = True, help = "Path to Private Key file ")
+    parser.add_argument('-t', '--timestamp', required = False, help = "timestamp (in 'date -R' format) ")
+    parser.add_argument('-o', '--output', required = True, help = "Filename for output signed file")
 
-    private_key_file_path = pyip.inputStr(prompt = "Please input private key file path:\n")
-    while not os.path.isfile(private_key_file_path):
-        print("ERROR: Please enter a valid file path.")
-        private_key_file_path = pyip.inputStr(prompt = "Please input private key file path:\n")
 
-    kpkg_config_file_input_path = pyip.inputStr(prompt = "Please input key package config file path to be signed:\n")
-    while not os.path.isfile(kpkg_config_file_input_path):
-        print("ERROR: Please enter a valid file path.")
-        kpkg_config_file_input_path = pyip.inputStr(prompt = "Please input key package config file path to be signed:\n")
+    args = parser.parse_args()
 
-    validate_kpkg(kpkg_config_file_input_path)
-    timestamp = input_timestamp()
-    output_path = pyip.inputStr(prompt = "Please input filename for output:\n")
+
+
+    if not os.path.isfile(args.keypackage):
+        print("ERROR: Please enter a valid key package .json config file path to be signed.")
+        return
+
+    if not os.path.isfile(args.publickey):
+        print("ERROR: Please enter a valid public key file path.")
+        return
+    if not os.path.isfile(args.privatekey):
+        print("ERROR: Please enter a valid private key file path.")
+        return
+
+    timestamp = None
+    if args.timestamp:
+        is_valid_timestamp = validate_timestamp(args.timestamp)
+        if isinstance(is_valid_timestamp, bool) and is_valid_timestamp is True:
+            timestamp = args.timestamp
+        else:
+            print('Please input a valid timestamp, closed with ""(in "date -R" format):\n')
+            return
+
+    validate_kpkg(args.keypackage)
     try:
-        add_timestamp(kpkg_config_file_input_path, timestamp)
+        add_timestamp(args.keypackage, timestamp)
     except Exception as e:
         print("Couldn't add timestamp to config file!")
     else:
-        sign_kpkg(public_key_file_path, private_key_file_path, TEMP_CONFIG_FILE_WITH_TIMESTAMP, output_path)
+        sign_kpkg(args.publickey, args.privatekey, TEMP_CONFIG_FILE_WITH_TIMESTAMP, args.output)
     finally:
         if os.path.exists(TEMP_CONFIG_FILE_WITH_TIMESTAMP):
             os.remove(TEMP_CONFIG_FILE_WITH_TIMESTAMP)
