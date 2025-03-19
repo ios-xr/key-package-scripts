@@ -1,5 +1,5 @@
 This should be used for XR versions 78x and above
-These scripts have been validated only with python2
+These scripts have been validated with python3.5,python3.6 and python3.8
 
 ## Creating Key Package
 
