@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # Copyright (c) 2022 Cisco and/or its affiliates.
 # 
@@ -69,7 +69,7 @@ def SortList(ilst, tgt):
         ts = ts[:-6]
         epoch = int(time.mktime(time.strptime(ts, "%a, %d %b %Y %H:%M:%S")))
         op[x] = epoch
-    s = sorted(op.items(), key=lambda x: x[1])
+    s = sorted(list(op.items()), key=lambda x: x[1])
     kdbg("Sorted: "+tgt)
     kdbg(s)
     dup_check = []
