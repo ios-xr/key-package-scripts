@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # Copyright (c) 2022 Cisco and/or its affiliates.
 # 
@@ -17,7 +17,7 @@
 
 import os
 import re
-from commands import *
+from subprocess import getstatusoutput 
 from datetime import datetime
 
 TEMPDIR   = "/tmp/KPKG_TMPDIR/"

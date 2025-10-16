@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # Copyright (c) 2022 Cisco and/or its affiliates.
 # 
@@ -16,7 +16,7 @@
 # or implied.
 
 import argparse
-from commands import *
+from subprocess import getstatusoutput
 import sys, os
 import time
 from kpkg_cmn import *

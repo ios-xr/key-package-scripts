@@ -1,15 +1,15 @@
 
 This should be used for XR versions 76x and 77x
-These scripts have been validated only with python2
+These scripts have been validated with python3.5,python3.6 and python3.8
 
 ## Creating Key Package
 
 ### To Add a GPG Key:
-create_kpkg.py -o ADD -t ALLOWED_LIST -u TESTG -k X509KEY -i ./test.gpg -p ./oc-single.pem -r ./oc-single-priv.key -f ~/test.add
+create_kpkg.py -o ADD -t ALLOWED_LIST -u TESTG -k X509KEY -i ./test.pem -p ./oc-single.pem -r ./oc-single-priv.key -f ~/test.add
 Key package generated at: ~/test.add
 
 ### To remove a Key:
-create_kpkg.py -o DELETE -t ALLOWED_LIST -u TESTG -k X509KEY -i ./test.gpg -p ./oc-single.pem -r ./oc-single-priv.key -f ~/test.del
+create_kpkg.py -o DELETE -t ALLOWED_LIST -u TESTG -k X509KEY -i ./test.pem -p ./oc-single.pem -r ./oc-single-priv.key -f ~/test.del
 Key package generated at: ~/test.del
 
 ### Verifying Key Package - Tools

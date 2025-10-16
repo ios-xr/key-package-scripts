@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # Copyright (c) 2022 Cisco and/or its affiliates.
 # 
@@ -17,7 +17,7 @@
 
 import os
 import re
-from commands import *
+from subprocess import getstatusoutput 
 from datetime import datetime
 
 TEMPDIR   = "/tmp/KPKG_TMPDIR/"
@@ -165,6 +165,7 @@ def sanitize_CUS_CT_additional(additional):
 
 
 def sanitizeTimestamp(timestamp_val):
+    timeobj = None # Initialize before try block
     try:
         timeobj = datetime.strptime(timestamp_val[0:(len(timestamp_val) - 5)],
                                     "%a, %d %b %Y %H:%M:%S ")
