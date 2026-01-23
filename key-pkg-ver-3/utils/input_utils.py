@@ -16,7 +16,7 @@ UPDATE_STR = "UPDATE"
 X509KEY_STR = "X509"
 GPGKEY_STR = "GPG"
 
-MAX_KEY_NAME_LEN = 12 
+MAX_KEY_NAME_LEN = 9 
 TIMESTAMP_LEN = 41
 VALID_TARGET_LIST = [ALLOWED_LIST_STR, REVOKED_LIST_STR]
 VALID_OPERATIONS = [UPDATE_STR]
@@ -61,11 +61,11 @@ def validate_key_package(file):
         if k.upper() not in key:
             print(f"Invalid key package file. {k.upper()} not present")
             return False
-        
+
         if not key.get(k.upper()):
             print(f"Invalid key package file. {k.upper()} is empty")
             return False
-    
+
     ret = validate_key_name(key["KEY_NAME"])
     if ret != True:
         print(ret)
@@ -89,7 +89,7 @@ def validate_key_name(key_name):
     if re.search(r'[^A-Za-z0-9_-]', key_name):
         return "Only - , _ and alphanumeric char allowed in key name"
     if len(key_name) > MAX_KEY_NAME_LEN:
-        return "key name length cannot be more than 12 characters"
+        return f"key name length cannot be more than {MAX_KEY_NAME_LEN} characters"
     return True
 
 def validate_timestamp(timestamp):
