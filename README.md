@@ -1,8 +1,8 @@
 This page summarizes the process of creation of Key Package
 
         - key-pkg-ver-1 should be used for XR releases 76x and 77x
-        - key-pkg-ver-2 should be used for XR releases 78x till 25.1x
-        - key-pkg-ver-3 should be used for XR releases 252x and above
+        - key-pkg-ver-2 should be used for XR releases 78x till 25.4x
+        - key-pkg-ver-3 should be used for XR releases 26.1.1 and above
 
 ## Why is Key Package needed.
 
