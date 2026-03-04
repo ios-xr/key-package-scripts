@@ -1,16 +1,17 @@
 This page summarizes the process of creation of Key Package
 
         - key-pkg-ver-1 should be used for XR releases 76x and 77x
-        - key-pkg-ver-2 should be used for XR releases 78x and above
+        - key-pkg-ver-2 should be used for XR releases 78x till 25.4x
+        - key-pkg-ver-3 should be used for XR releases 26.1.1 and above
 
 ## Why is Key Package needed.
 
-The end goal of Key Package infrastructure is to provide user a secure mechanism to install Customer signed software or a secure way for customer to send Customer Signed Consent Requests. Key-package is a conduit used to securely onboard public/verification keys of 3rd party non-cisco customers, onto XR devices.
-
+Key-package is a conduit used to securely onboard public/verification keys of 3rd party non-cisco customers, onto XR devices.
+The end goal of Key Package infrastructure is to provide the user a secure mechanism to install Customer keys (either GPG or X509). These keys can be used to securely onboard a customer signed software or to sign Customer Consent Requests (CT). 
 
 ## What is Key Package
 
-Key package is a CMS file (Cryptographic Message Syntax - RFC5652) which is digitally signed by the Ownership Certificate (OC), and having a payload. The payload is a tar of the customer/3rd party keys which are to be onboarded onto the system, along with a configuration file config.txt which contains details on what actions to be performed with the key.
+Key package is a CMS file (Cryptographic Message Syntax - RFC5652) which is digitally signed by the Ownership Certificate (OC). The payload is a json file with customer/3rd party keys which are to be onboarded onto the system. 
 
 ## Pre-requisites - Establish Device Ownership
 

@@ -32,8 +32,7 @@ def package_exists(key_packages_list, target_list, operation):
 
 
 class Key:
-    def __init__(self, key_type, key_name, key_file_content, key_metadata):
+    def __init__(self, key_type, key_name, key_file_content):
         self.key_type = key_type  # cann't be empty
         self.key_name = key_name  # cann't be empty
-        self.key_metadata = key_metadata # can be empty, cannot be more than 128 chars
         self.key_value = key_file_content

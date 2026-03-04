@@ -1,102 +1,120 @@
-import subprocess, json, os
+import argparse
+import json
+import sys
+import subprocess
 from utils.create_kpkg_helper import *
 from utils.input_utils import *
-from validate_kpkg import *
 
 TEMP_CONFIG_FILE_WITH_TIMESTAMP = 'modified_config_with_ts.json'
-
 
 def add_timestamp(config_file_input_path, timestamp):
     '''Add timestamp, if timestamp value is blank, generate and add.
     Expects a valid timestamp or blank timestamp value
     '''
-
     with open(config_file_input_path, 'r') as new_config_file:
-        # read
         config_file_data = json.load(new_config_file)
-        # get current timestamp if not provide by user
-        if timestamp == "" or timestamp is None:
-            cmd_result = subprocess.run(["date", "-R"], stdout=subprocess.PIPE)
-            if cmd_result.returncode != 0:
-                    print("Failed to get timestamp from system")
-                    print("Signing failed!")
-                    exit(1)
-            else:
-                timestamp = (cmd_result.stdout.decode("utf-8")).strip()
-        # add timestamp
-        config_file_data["timestamp"] = timestamp
-        new_config_file_data = json.dumps(config_file_data, indent=4)
+        if not timestamp:
+            timestamp = subprocess.check_output(['date', '-R']).decode().strip()
+        config_file_data['timestamp'] = timestamp
 
-    # open
-    with open(TEMP_CONFIG_FILE_WITH_TIMESTAMP, 'w') as new_config_file:
-        # write
-        # print("new_config_file_data#######", new_config_file_data)
-        new_config_file.write(new_config_file_data)
+    with open(TEMP_CONFIG_FILE_WITH_TIMESTAMP, 'w') as modified_config_file:
+        json.dump(config_file_data, modified_config_file, indent=4)
 
-
-def sign_kpkg(public_key_file_path, private_key_file_path, config_input_path, output_path):
-    '''Signs a json config file
-    pub_key: oc-single.pem, priv_key: oc-single-priv.key, config_file: json config file, output_path: .del file
-    '''
-    try:
-        cmd_result = subprocess.run(["openssl", "smime", "-sign", "-binary", "-in", config_input_path, "-signer", public_key_file_path, "-outform", "DER", "-inkey", private_key_file_path, "-nodetach", "-out",  output_path], stdout=subprocess.PIPE)
-        if cmd_result.returncode != 0:
-            # print("ERROR:\n",cmd_result.stdout.decode("utf-8"))
-            print("Signing failed!")
-        else:
-            print("Signed Successfully!")
-    except Exception as e:
-        print("Could not sign due to following reason:")
-        print(e)
-    finally:
-        if os.path.exists(TEMP_CONFIG_FILE_WITH_TIMESTAMP):
-            os.remove(TEMP_CONFIG_FILE_WITH_TIMESTAMP)
-
+    return TEMP_CONFIG_FILE_WITH_TIMESTAMP
 
 def main():
-    parser = argparse.ArgumentParser(description = "Validate a manually created key package .json file")
-    parser.add_argument('-f', '--keypackage', required = True, help = "Path to Key Package .json config file ")
-    parser.add_argument('-p', '--publickey', required = True, help = "Path to Public Key file ")
-    parser.add_argument('-r', '--privatekey', required = True, help = "Path to Private Key file ")
-    parser.add_argument('-t', '--timestamp', required = False, help = "timestamp (in 'date -R' format) ")
-    parser.add_argument('-o', '--output', required = True, help = "Filename for output signed file")
-
+    parser = argparse.ArgumentParser(description="Sign key package config file.")
+    parser.add_argument('-A', '--allowed', required=False, help="Comma-separated list of allowed key package JSON files")
+    parser.add_argument('-R', '--revoked', required=False, help="Comma-separated list of revoked key package JSON files")
+    parser.add_argument('-p', '--pub_cert', required=True, help="Ownership cert file")
+    parser.add_argument('-r', '--priv_key', required=True, help="Ownership private key file")
+    parser.add_argument('-o', '--output_file', required=True, help="Output file name")
+    parser.add_argument('-t', '--timestamp', help="Timestamp (in 'date -R' output format), if not provided, current system's timestamp will be used")
+    parser.add_argument('-n', '--nosign', required=False, action='store_true',
+                        help="Generate key package but don't sign.")
 
     args = parser.parse_args()
 
+    if not args.allowed and not args.revoked:
+        print("At least one of allowed or revoked key packages should be provided.")
+        sys.exit(1)
+    
+    # Combine allowed and revoked key packages
+    key_packages = {VERSION_STR: VERSION, TIMESTAMP_STR: "", OPERATION_STR: UPDATE_STR}
 
+    allowed_files = []
+    revoked_files = []
+    if args.allowed:
+        key_packages[ALLOWED_LIST_STR] = []
+        allowed_files = args.allowed.split(',')
+        for file in allowed_files:
+            if not validate_key_package(file):
+                sys.exit(1)
+    
+    if args.revoked:
+        key_packages[REVOKED_LIST_STR] = []
+        revoked_files = args.revoked.split(',')
+        for file in revoked_files:
+            if not validate_key_package(file):
+                sys.exit(1)
+   
+    pub_cert = args.pub_cert
+    priv_key = args.priv_key
+    output_file = args.output_file
+    timestamp = args.timestamp
 
-    if not os.path.isfile(args.keypackage):
-        print("ERROR: Please enter a valid key package .json config file path to be signed.")
-        return
+    for file in allowed_files:
+        if os.path.getsize(file) == 0:
+            continue
+        with open(file, 'r') as f:
+            key_packages[ALLOWED_LIST_STR].append(json.load(f))
 
-    if not os.path.isfile(args.publickey):
-        print("ERROR: Please enter a valid public key file path.")
-        return
-    if not os.path.isfile(args.privatekey):
-        print("ERROR: Please enter a valid private key file path.")
-        return
+    for file in revoked_files:
+        if os.path.getsize(file) == 0:
+            continue
+        with open(file, 'r') as f:
+            key_packages[REVOKED_LIST_STR].append(json.load(f))
 
-    timestamp = None
-    if args.timestamp:
-        is_valid_timestamp = validate_timestamp(args.timestamp)
-        if isinstance(is_valid_timestamp, bool) and is_valid_timestamp is True:
-            timestamp = args.timestamp
-        else:
-            print('Please input a valid timestamp, closed with ""(in "date -R" format):\n')
-            return
+    # If timestamp is provided, add it with TIMESTAMP key after validating
+    if timestamp:
+        is_valid_timestamp = validate_timestamp(timestamp)
+        if not is_valid_timestamp:
+            print("Invalid timestamp provided. Exiting.")
+            sys.exit(1)
 
-    validate_kpkg(args.keypackage)
-    try:
-        add_timestamp(args.keypackage, timestamp)
-    except Exception as e:
-        print("Couldn't add timestamp to config file!")
+        key_packages[TIMESTAMP_STR] = timestamp
     else:
-        sign_kpkg(args.publickey, args.privatekey, TEMP_CONFIG_FILE_WITH_TIMESTAMP, args.output)
-    finally:
-        if os.path.exists(TEMP_CONFIG_FILE_WITH_TIMESTAMP):
-            os.remove(TEMP_CONFIG_FILE_WITH_TIMESTAMP)
+        try:
+            key_packages[TIMESTAMP_STR] = subprocess.check_output(['date', '-R']).decode().strip()
+        except Exception as e:
+            print(f"Error on getting time: {e}")
+            sys.exit(1)
 
+    if args.nosign:
+        with open(output_file, 'w') as f:
+            json.dump(key_packages, f, indent=4)
+        print(f"Unsigned key package saved to: {output_file}")
+        sys.exit(0)
+    
+    # Write combined key packages to a temporary file
+    kpkg_json_file = 'unsigned_kpkg.json'
+    with open(kpkg_json_file, 'w') as f:
+        json.dump(key_packages, f, indent=4)
+
+    print("Signing key package...")
+    ret_code = 0
+    # Sign the final config file
+    sign_cmd = f"openssl smime -sign -binary -in {kpkg_json_file} -signer {pub_cert} -inkey {priv_key} -outform DER -nodetach -out {output_file}"
+
+    try:
+        subprocess.run(sign_cmd, shell=True, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing sign command: {e}")
+        ret_code = 1
+    
+
+    print(f"Signed key package saved to: {output_file}")
+    sys.exit(ret_code)
 
 if __name__ == "__main__":
     main()
